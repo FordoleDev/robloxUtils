@@ -71,34 +71,24 @@ end
 
 getClient()
 
+local currentTouchPosition = Vector2.new(camera.ViewportSize.X / 2, camera.ViewportSize.Y / 2)
+local isTouching = false
+
 if isMobile then
-	local screenGui = Instance.new("ScreenGui")
-	screenGui.Name = "AimAssistGui"
-	screenGui.Parent = plrs.LocalPlayer:WaitForChild("PlayerGui")
-
-	local mobileAimButton = Instance.new("TextButton")
-	mobileAimButton.Name = "MobileAimButton"
-	mobileAimButton.Size = UDim2.new(0, 120, 0, 60)
-	mobileAimButton.Position = UDim2.new(1, -130, 1, -70)
-	mobileAimButton.AnchorPoint = Vector2.new(1, 1)
-	mobileAimButton.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
-	mobileAimButton.BackgroundTransparency = 0.3
-	mobileAimButton.Text = "AIM"
-	mobileAimButton.TextColor3 = Color3.fromRGB(255, 255, 255)
-	mobileAimButton.TextSize = 18
-	mobileAimButton.Visible = true
-	mobileAimButton.Parent = screenGui
-
-	mobileAimButton.MouseButton1Up:Connect(function()
-		mobaim = false
-	end)
-	
-	mobileAimButton.MouseButton1Down:Connect(function()
-		mobaim = true
+	uis.TouchStarted:Connect(function(input, gameProcessed)
+		if gameProcessed then return end
+		isTouching = true
+		currentTouchPosition = input.Position
 	end)
 
-	mobileAimButton.Activated:Connect(function()
-		mobaim = false
+	uis.TouchMoved:Connect(function(input, gameProcessed)
+		if gameProcessed then return end
+		currentTouchPosition = input.Position
+	end)
+
+	uis.TouchEnded:Connect(function(input, gameProcessed)
+		if gameProcessed then return end
+		isTouching = false
 	end)
 end
 
@@ -924,11 +914,10 @@ rs.RenderStepped:Connect(function()
 
 		local inputPos
 		if isMobile then
-			local touchInputs = uis:GetTouchInputs()
-			if #touchInputs > 0 then
-				inputPos = touchInputs[1].Position
+			if isTouching then
+				inputPos = currentTouchPosition
 			else
-				return
+				return -- Нет активного касания
 			end
 		else
 			inputPos = uis:GetMouseLocation()
