@@ -16,6 +16,8 @@ local tp = false
 local aimkey
 local isMobile = uis.TouchEnabled and not uis.KeyboardEnabled
 local mobaim = false
+local mobileAimButton = nil
+local currentTouchPosition = Vector2.new(camera.ViewportSize.X / 2, camera.ViewportSize.Y / 2)
 print(isMobile)
 
 local fov = Drawing.new("Circle")
@@ -84,7 +86,7 @@ if isMobile then
 		screenGui.Name = "MobileAimGUI"
 		screenGui.Parent = playerGui
 
-		local mobileAimButton = Instance.new("TextButton")
+		mobileAimButton = Instance.new("TextButton")
 		mobileAimButton.Name = "MobileAimButton"
 		mobileAimButton.Size = UDim2.new(0, 120, 0, 60)
 		mobileAimButton.Position = UDim2.new(1, -130, 1, -70)
