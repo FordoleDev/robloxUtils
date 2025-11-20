@@ -71,7 +71,7 @@ end
 
 getClient()
 
-if not isMobile then
+if isMobile then
 	local screenGui = Instance.new("ScreenGui")
 	screenGui.Name = "AimAssistGui"
 	screenGui.Parent = plrs.LocalPlayer:WaitForChild("PlayerGui")
@@ -89,14 +89,16 @@ if not isMobile then
 	mobileAimButton.Visible = true
 	mobileAimButton.Parent = screenGui
 
-	mobileAimButton.TouchLongPress:Connect(function()
+	mobileAimButton.MouseButton1Up:Connect(function()
+		mobaim = false
+	end)
+	
+	mobileAimButton.MouseButton1Down:Connect(function()
 		mobaim = true
-		mobileAimButton.BackgroundColor3 = Color3.fromRGB(0, 255, 0)
 	end)
 
-	mobileAimButton.TouchEnded:Connect(function()
+	mobileAimButton.Activated:Connect(function()
 		mobaim = false
-		mobileAimButton.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
 	end)
 end
 
