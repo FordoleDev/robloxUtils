@@ -71,7 +71,7 @@ end
 
 getClient()
 
-if isMobile then
+if not isMobile then
 	local screenGui = Instance.new("ScreenGui")
 	screenGui.Name = "AimAssistGui"
 	screenGui.Parent = plrs.LocalPlayer:WaitForChild("PlayerGui")
