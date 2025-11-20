@@ -72,31 +72,31 @@ end
 getClient()
 
 if isMobile then
+	local screenGui = Instance.new("ScreenGui")
+	screenGui.Name = "AimAssistGui"
+	screenGui.Parent = plrs.LocalPlayer:WaitForChild("PlayerGui")
+
 	local mobileAimButton = Instance.new("TextButton")
 	mobileAimButton.Name = "MobileAimButton"
-	mobileAimButton.Size = UDim2.new(0, 100, 0, 100)
-	mobileAimButton.Position = UDim2.new(1, -120, 1, -120)
+	mobileAimButton.Size = UDim2.new(0, 120, 0, 60)
+	mobileAimButton.Position = UDim2.new(1, -130, 1, -70)
+	mobileAimButton.AnchorPoint = Vector2.new(1, 1)
 	mobileAimButton.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
-	mobileAimButton.BackgroundTransparency = 0.5
+	mobileAimButton.BackgroundTransparency = 0.3
 	mobileAimButton.Text = "AIM"
 	mobileAimButton.TextColor3 = Color3.fromRGB(255, 255, 255)
-	mobileAimButton.TextSize = 14
-	mobileAimButton.Visible = false
-	mobileAimButton.Parent = plrs.LocalPlayer.PlayerGui
-	mobileAimButton.MouseButton1Down:Connect(function()
-		mobaim = true
-	end)
-
-	mobileAimButton.MouseButton1Up:Connect(function()
-		mobaim = false
-	end)
+	mobileAimButton.TextSize = 18
+	mobileAimButton.Visible = true
+	mobileAimButton.Parent = screenGui
 
 	mobileAimButton.TouchLongPress:Connect(function()
 		mobaim = true
+		mobileAimButton.BackgroundColor3 = Color3.fromRGB(0, 255, 0)
 	end)
 
 	mobileAimButton.TouchEnded:Connect(function()
 		mobaim = false
+		mobileAimButton.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
 	end)
 end
 
