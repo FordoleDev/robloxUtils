@@ -75,6 +75,45 @@ local currentTouchPosition = Vector2.new(camera.ViewportSize.X / 2, camera.Viewp
 local isTouching = false
 
 if isMobile then
+	-- Ждем пока PlayerGui загрузится
+	local function createMobileButton()
+		local player = plrs.LocalPlayer
+		local playerGui = player:WaitForChild("PlayerGui")
+
+		local screenGui = Instance.new("ScreenGui")
+		screenGui.Name = "MobileAimGUI"
+		screenGui.Parent = playerGui
+
+		local mobileAimButton = Instance.new("TextButton")
+		mobileAimButton.Name = "MobileAimButton"
+		mobileAimButton.Size = UDim2.new(0, 120, 0, 60)
+		mobileAimButton.Position = UDim2.new(1, -130, 1, -70)
+		mobileAimButton.AnchorPoint = Vector2.new(1, 1)
+		mobileAimButton.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
+		mobileAimButton.BackgroundTransparency = 0.3
+		mobileAimButton.Text = "AIM"
+		mobileAimButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+		mobileAimButton.TextSize = 18
+		mobileAimButton.Visible = true
+		mobileAimButton.Parent = screenGui
+
+		mobileAimButton.MouseButton1Down:Connect(function()
+			mobaim = true
+			mobileAimButton.BackgroundColor3 = Color3.fromRGB(0, 255, 0)
+			print("Mobile AIM: ON")
+		end)
+
+		mobileAimButton.MouseButton1Up:Connect(function()
+			mobaim = false
+			mobileAimButton.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
+			print("Mobile AIM: OFF")
+		end)
+
+		print("Mobile AIM button created successfully")
+	end
+
+	createMobileButton()
+
 	uis.TouchStarted:Connect(function(input, gameProcessed)
 		if gameProcessed then return end
 		isTouching = true
@@ -91,7 +130,6 @@ if isMobile then
 		isTouching = false
 	end)
 end
-
 --if _G.triggerbotLoaded then return end
 _G.triggerbotLoaded = true
 
@@ -914,11 +952,7 @@ rs.RenderStepped:Connect(function()
 
 		local inputPos
 		if isMobile then
-			if isTouching then
-				inputPos = currentTouchPosition
-			else
-				return -- Нет активного касания
-			end
+			inputPos = currentTouchPosition
 		else
 			inputPos = uis:GetMouseLocation()
 		end
@@ -934,7 +968,6 @@ rs.RenderStepped:Connect(function()
 						local screenpos = Vector2.new(screenpoint.X, screenpoint.Y)
 						if hump then
 							local distance = (targetPart.Position - hump.Position).Magnitude
-							-- ИСПРАВЬ эту строку - используй inputPos вместо mpos:
 							if (screenpos - inputPos).Magnitude <= _G.FOV and distance < closestDist then
 								closestPlayer = plr
 								closestDist = distance
