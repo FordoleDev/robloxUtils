@@ -15,6 +15,7 @@ local rcolor
 local tp = false
 local aimkey
 local isMobile = uis.TouchEnabled and not uis.KeyboardEnabled
+local mobaim = false
 print(isMobile)
 
 local fov = Drawing.new("Circle")
@@ -23,6 +24,7 @@ fov.Thickness = 1
 fov.Transparency = 1
 fov.Visible = true
 fov.Position = Vector2.new(camera.ViewportSize.X / 2, camera.ViewportSize.Y / 2)
+fov.Filled = false
 
 _G.Chams = false
 _G.ChamsColor = Color3.fromRGB(255, 255, 255)
@@ -68,6 +70,36 @@ local function getClient()
 end
 
 getClient()
+
+if isMobile then
+	mobileAimButton = Instance.new("TextButton")
+	mobileAimButton.Name = "MobileAimButton"
+	mobileAimButton.Size = UDim2.new(0, 100, 0, 100)
+	mobileAimButton.Position = UDim2.new(1, -120, 1, -120)
+	mobileAimButton.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
+	mobileAimButton.BackgroundTransparency = 0.5
+	mobileAimButton.Text = "AIM"
+	mobileAimButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+	mobileAimButton.TextSize = 14
+	mobileAimButton.Visible = false
+	mobileAimButton.Parent = game:GetService("CoreGui")
+
+	mobileAimButton.MouseButton1Down:Connect(function()
+		mobaim = true
+	end)
+
+	mobileAimButton.MouseButton1Up:Connect(function()
+		mobaim = false
+	end)
+
+	mobileAimButton.TouchLongPress:Connect(function()
+		mobaim = true
+	end)
+
+	mobileAimButton.TouchEnded:Connect(function()
+		mobaim = false
+	end)
+end
 
 --if _G.triggerbotLoaded then return end
 _G.triggerbotLoaded = true
@@ -885,10 +917,10 @@ rs.RenderStepped:Connect(function()
 			end
 		end
 	end
-	if aim == true then
+	if aim == true or (isMobile and mobaim) then
 		local closestPlayer = nil
 		local closestDist = math.huge
-		
+
 		local inputPos
 		if isMobile then
 			local touchInputs = uis:GetTouchInputs()
@@ -909,11 +941,11 @@ rs.RenderStepped:Connect(function()
 					local screenpoint = camera:WorldToViewportPoint(targetPart.Position)
 
 					if screenpoint.Z > 0 then
-						local mpos = uis:GetMouseLocation()
 						local screenpos = Vector2.new(screenpoint.X, screenpoint.Y)
 						if hump then
 							local distance = (targetPart.Position - hump.Position).Magnitude
-							if (screenpos - mpos).Magnitude <= _G.FOV and distance < closestDist then
+							-- ИСПРАВЬ эту строку - используй inputPos вместо mpos:
+							if (screenpos - inputPos).Magnitude <= _G.FOV and distance < closestDist then
 								closestPlayer = plr
 								closestDist = distance
 							end
