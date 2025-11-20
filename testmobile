@@ -82,8 +82,7 @@ if isMobile then
 	mobileAimButton.TextColor3 = Color3.fromRGB(255, 255, 255)
 	mobileAimButton.TextSize = 14
 	mobileAimButton.Visible = false
-	mobileAimButton.Parent = game:GetService("CoreGui")
-
+	mobileAimButton.Parent = plrs.LocalPlayer.PlayerGui
 	mobileAimButton.MouseButton1Down:Connect(function()
 		mobaim = true
 	end)
