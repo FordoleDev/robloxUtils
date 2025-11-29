@@ -1,0 +1,95 @@
+local Aimbot = {}
+
+local plrs = game:GetService("Players")
+local lplr = plrs.LocalPlayer
+local cam = workspace.CurrentCamera
+local uis = game:GetService("UserInputService")
+local runs = game:GetService("RunService")
+
+local aiming = false
+local aimKeyCode = Enum.KeyCode.F
+
+function Aimbot.isEnemy(plr)
+    if not _G.Aimbot.TeamCheck then
+        return true
+    end
+    if plr.Team and lplr.Team then
+        return plr.Team ~= lplr.Team
+    end
+    return true
+end
+
+function Aimbot.isAlive(plr)
+    if not plr or not plr.Character then
+        return false
+    end
+    local hum = plr.Character:FindFirstChild("Humanoid")
+    if not hum then
+        return false
+    end
+    return hum.Health > 0
+end
+
+function Aimbot.getClosestPlayer()
+    if not lplr.Character then return nil end
+    
+    local hum = lplr.Character:FindFirstChild("HumanoidRootPart")
+    if not hum then return nil end
+    
+    local closestPlayer = nil
+    local closestDist = math.huge
+    local mousePos = uis:GetMouseLocation()
+
+    for _, plr in pairs(plrs:GetPlayers()) do
+        if plr ~= lplr and plr.Character then
+            if Aimbot.isEnemy(plr) and Aimbot.isAlive(plr) then
+                local aimPart = plr.Character:FindFirstChild(_G.Aimbot.AimPart or "Head")
+                
+                if aimPart then
+                    local screenPoint = cam:WorldToViewportPoint(aimPart.Position)
+                    
+                    if screenPoint.Z > 0 then
+                        local screenPos = Vector2.new(screenPoint.X, screenPoint.Y)
+                        local distance = (screenPos - mousePos).Magnitude
+                        
+                        if distance <= _G.Aimbot.FOV and distance < closestDist then
+                            closestPlayer = plr
+                            closestDist = distance
+                        end
+                    end
+                end
+            end
+        end
+    end
+    
+    return closestPlayer
+end
+
+uis.InputBegan:Connect(function(input)
+    if input.KeyCode == aimKeyCode then
+        aiming = true
+    end
+end)
+
+uis.InputEnded:Connect(function(input)
+    if input.KeyCode == aimKeyCode then
+        aiming = false
+    end
+end)
+
+runs.RenderStepped:Connect(function()
+    aimKeyCode = Enum.KeyCode[_G.Aimbot.AimKey or "F"] or Enum.KeyCode.F
+    
+    if _G.Aimbot.Enabled and aiming and lplr.Character then
+        local closestPlayer = Aimbot.getClosestPlayer()
+        
+        if closestPlayer then
+            local aimPart = closestPlayer.Character:FindFirstChild(_G.Aimbot.AimPart or "Head")
+            if aimPart then
+                cam.CFrame = CFrame.new(cam.CFrame.Position, aimPart.Position)
+            end
+        end
+    end
+end)
+
+return Aimbot
