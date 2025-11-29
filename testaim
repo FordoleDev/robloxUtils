@@ -78,7 +78,6 @@ uis.InputEnded:Connect(function(input)
 end)
 
 runs.RenderStepped:Connect(function()
-    
     if _G.Aimbot.Enabled and aiming and lplr.Character then
         local closestPlayer = Aimbot.getClosestPlayer()
         
