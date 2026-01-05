@@ -52,7 +52,7 @@ fov.Position = Vector2.new(camera.ViewportSize.X / 2, camera.ViewportSize.Y / 2)
 fov.Filled = false
 
 local Window = Library:CreateWindow({
-	Title = 'Example menu',
+	Title = 'LontexHub',
 	Center = true,
 	AutoShow = true,
 	TabPadding = 8
